@@ -25,11 +25,14 @@ class DefaultController extends Controller
 
     public function actionAdd($id)
     {
-        $handler = new WishlistHandler(Yii::$app->cookiesAndSession);
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            'counter' => $handler->addToWishlist($id) + 1,
-        ];
+        if(Yii::$app->request->isAjax){
+            $handler = new WishlistHandler(Yii::$app->cookiesAndSession);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'counter' => $handler->addToWishlist($id) + 1,
+            ];
+        }
+        return $this->goHome();
     }
 
     public function actionDelete($id){
@@ -43,6 +46,6 @@ class DefaultController extends Controller
     public function actionClear(){
         Yii::$app->cookiesAndSession->removeSession('wishlist');
         Yii::$app->cookiesAndSession->removeCookie('wishlist');
-        return $this->goHome();
+        return $this->redirect(['/wishlist/default/index']);
     }
 }
