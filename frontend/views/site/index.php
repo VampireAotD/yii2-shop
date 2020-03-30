@@ -3,7 +3,7 @@
 /**
  * @var $this yii\web\View
  * @var $model \frontend\models\Categories
- * @var $goods_model \frontend\models\Goods
+ * @var $goods \frontend\models\Goods
  * @var $slider \frontend\models\Slide
  */
 
@@ -37,7 +37,7 @@ $this->registerMetaTag([
             <div class="row">
                 <div class="col-sm-12">
                     <div class="promo-slider">
-                        <?php foreach ($slider->getSlideList() as $slide) : ?>
+                        <?php foreach ($slides as $slide) : ?>
                             <a href="<?= Url::to(['/good/default/index', 'id' => $slide->id_good]) ?>">
                                 <div class="slider-image"
                                      style="background: url('<?= $slide->getImage() ?>') center center; -webkit-background-size: cover; background-size: cover;">
@@ -60,7 +60,7 @@ $this->registerMetaTag([
                     <div class="left-sidebar">
                         <h2><?= Yii::t('index', 'Categories') ?></h2>
                         <div class="panel-group category-products" id="accordian"><!--category-productsr-->
-                            <?php foreach ($categories->getCategoriesList() as $category) : ?>
+                            <?php foreach ($categories as $category) : ?>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title"><a
@@ -89,7 +89,8 @@ $this->registerMetaTag([
                                 ?>
                                 <b class="pull-left">$ 0</b> <b class="pull-right">$ <?= $max_price ?></b>
                                 <input type="text" name="price-search" class="price-change" style="display: none;">
-                                <input type="submit" name="price" class="price-find" value="<?= Yii::t('index', 'Price Range') ?>">
+                                <input type="submit" name="price" class="price-find"
+                                       value="<?= Yii::t('index', 'Price Range') ?>">
                                 <?php
                                 ActiveForm::end();
                                 ?>
@@ -120,7 +121,7 @@ $this->registerMetaTag([
                                             <div class="product-overlay">
                                                 <div class="overlay-content">
                                                     <h2><?= $good->name ?></h2>
-                                                    <?=ButtonsWidget::widget(['id' => $good->id])?>
+                                                    <?= ButtonsWidget::widget(['id' => $good->id]) ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,7 +188,7 @@ $this->registerMetaTag([
                         </div>
                     </div><!--/category-tab-->
 
-                    <?=RecentViewedWidget::widget()?>
+                    <?= RecentViewedWidget::widget() ?>
 
                 </div>
             </div>

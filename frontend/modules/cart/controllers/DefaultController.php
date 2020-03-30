@@ -27,6 +27,10 @@ class DefaultController extends Controller
         return $this->render('index', compact('items', 'model', 'total'));
     }
 
+    /**
+     * @param $id
+     * @return array|Response
+     */
     public function actionAdd($id)
     {
         if(Yii::$app->request->isAjax){
@@ -39,6 +43,10 @@ class DefaultController extends Controller
         return $this->goHome();
     }
 
+    /**
+     * @param $id
+     * @return Response
+     */
     public function actionDelete($id)
     {
         $model = new CartHandler;
@@ -46,27 +54,24 @@ class DefaultController extends Controller
         return $this->redirect(['/cart/default/index']);
     }
 
+    /**
+     * @return array|Response
+     */
     public function actionChangeAmount()
     {
-        $session = Yii::$app->cookiesAndSession->getSession('basket');
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         if (Yii::$app->request->isPost) {
-            $request = Yii::$app->request->post();
-            $id = ArrayHelper::getValue($request, 'id');
-            $amount = ArrayHelper::getValue($request, 'amount');
-
-            for ($i = 0; $i < count($session); $i++) {
-                if ($session[$i]['id'] == $id) {
-                    $session[$i]['amount'] = $amount;
-                    Yii::$app->cookiesAndSession->setSession('basket', $session);
-                }
-            }
+            $handler = new CartHandler;
+            $data = Yii::$app->request->post();
+            return ['total' => $handler->changeAmount($data)];
         }
-        $handler = new CartHandler;
-        return ['total' => $handler->getTotal()];
+        return $this->redirect(['/cart/default/index']);
     }
 
+    /**
+     * @return Response
+     */
     public function actionCheckout()
     {
         if (Yii::$app->user->isGuest) {
@@ -83,6 +88,9 @@ class DefaultController extends Controller
         return $this->goBack();
     }
 
+    /**
+     * @return string|Response
+     */
     public function actionCheckoutConfirm()
     {
         if (Yii::$app->user->isGuest) {
@@ -106,6 +114,9 @@ class DefaultController extends Controller
         return $this->render('checkout', compact('model', 'total'));
     }
 
+    /**
+     * @return Response
+     */
     public function actionClear()
     {
         Yii::$app->cookiesAndSession->removeSession('basket');

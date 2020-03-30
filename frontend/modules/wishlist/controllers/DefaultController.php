@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\modules\wishlist\controllers;
 
 use frontend\models\Goods;
@@ -20,14 +21,21 @@ class DefaultController extends Controller
     {
         $ids = Yii::$app->cookiesAndSession->getCookieValue('wishlist');
         $wishlist = Goods::find()->where(['id' => $ids])->all();
+
         return $this->render('index', compact('wishlist'));
     }
 
+    /**
+     * Action for adding good to wishlist
+     * @param $id
+     * @return array|Response
+     */
     public function actionAdd($id)
     {
-        if(Yii::$app->request->isAjax){
+        if (Yii::$app->request->isAjax) {
             $handler = new WishlistHandler(Yii::$app->cookiesAndSession);
             Yii::$app->response->format = Response::FORMAT_JSON;
+
             return [
                 'counter' => $handler->addToWishlist($id) + 1,
             ];
@@ -35,17 +43,30 @@ class DefaultController extends Controller
         return $this->goHome();
     }
 
-    public function actionDelete($id){
+    /**
+     * Action for deleting good to wishlist
+     * @param $id
+     * @return array
+     */
+    public function actionDelete($id)
+    {
         $handler = new WishlistHandler(Yii::$app->cookiesAndSession);
         Yii::$app->response->format = Response::FORMAT_JSON;
+
         return [
             'counter' => $handler->deleteFromWishlist($id) - 1,
         ];
     }
 
-    public function actionClear(){
+    /**
+     * Action for clearing wishlist
+     * @return Response
+     */
+    public function actionClear()
+    {
         Yii::$app->cookiesAndSession->removeSession('wishlist');
         Yii::$app->cookiesAndSession->removeCookie('wishlist');
+
         return $this->redirect(['/wishlist/default/index']);
     }
 }

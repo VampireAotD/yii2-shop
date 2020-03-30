@@ -12,6 +12,14 @@ class CartHandler extends Model
     public $quantity;
     private $total = 0;
 
+    public function rules()
+    {
+        return [
+            ['quantity', 'required'],
+            ['quantity', 'integer', 'min' => 1, 'max' => 3],
+        ];
+    }
+
     public function addToCart($id)
     {
         $helper = Yii::$app->cookiesAndSession;
@@ -72,6 +80,22 @@ class CartHandler extends Model
         unset($items);
     }
 
+    public function changeAmount($data){
+        $session = Yii::$app->cookiesAndSession->getSession('basket');
+
+        $id = ArrayHelper::getValue($data, 'id');
+        $amount = ArrayHelper::getValue($data, 'amount');
+
+        for ($i = 0; $i < count($session); $i++) {
+            if ($session[$i]['id'] == $id) {
+                $session[$i]['amount'] = $amount;
+                Yii::$app->cookiesAndSession->setSession('basket', $session);
+            }
+        }
+
+        return $this->getTotal();
+    }
+
     public function getTotal()
     {
         $session = Yii::$app->cookiesAndSession->getSession('basket');
@@ -81,14 +105,6 @@ class CartHandler extends Model
             }
         }
         return $this->total;
-    }
-
-    public function rules()
-    {
-        return [
-            ['quantity', 'required'],
-            ['quantity', 'integer', 'min' => 1, 'max' => 3],
-        ];
     }
 
 }

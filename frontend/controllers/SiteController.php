@@ -82,14 +82,17 @@ class SiteController extends Controller
         (new AuthHandler($client))->handle();
     }
 
+    /**
+     * Render index view
+     * @return string
+     */
     public function actionIndex()
     {
-        $categories = new Categories;
+        $categories_model = new Categories;
         $goods_model = new Goods;
-        $slider = new Slide;
-        $params = [];
-        $max_price = Goods::getMaxPrice();
+        $slider_model = new Slide;
 
+        $params = [];
         if(Yii::$app->request->get()){
             $params = Yii::$app->request->get();
         }
@@ -99,8 +102,13 @@ class SiteController extends Controller
            'defaultPageSize' => 50,
            'totalCount' => $goods->count()
         ]);
+
+        $categories = $categories_model->getCategoriesList();
         $goods = $goods->offset($pagination->offset)->limit($pagination->limit)->all();
-        return $this->render('index',compact('categories','goods', 'pagination', 'slider', 'max_price'));
+        $slides = $slider_model->getSlideList();
+        $max_price = Goods::getMaxPrice();
+
+        return $this->render('index',compact('categories','goods', 'pagination', 'slides', 'max_price'));
     }
 
     /**
