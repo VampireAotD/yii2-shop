@@ -99,7 +99,7 @@ class ManageController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save() && $model->saveCategories()) {
+        if ($model->load(Yii::$app->request->post()) && $model->saveCategories()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
