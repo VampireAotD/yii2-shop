@@ -20,8 +20,12 @@ if ($goods) {
                                 <div class="productinfo text-center">
                                     <img src="<?= Yii::$app->storage->getFile($good['image']) ?>" alt=""/>
                                     <h2><?= Yii::$app->formatter->asCurrency($good['price']) ?></h2>
-                                    <p><?= $good['name'] ?></p>
-                                    <?= ButtonsWidget::widget(['id' => $good['id']]) ?>
+                                    <p><a href="<?=\yii\helpers\Url::to(['good/default/index', 'id' => $good->id])?>"><?= $good['name'] ?></a></p>
+                                    <?php
+                                    if ($good['amount'] > 0) {
+                                        echo ButtonsWidget::widget(['id' => $good['id']]);
+                                    }
+                                    ?>
                                 </div>
 
                             </div>

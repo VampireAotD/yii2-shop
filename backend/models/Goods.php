@@ -34,6 +34,12 @@ class Goods extends \yii\db\ActiveRecord
         return 'goods';
     }
 
+    public function init()
+    {
+        parent::init();
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'afterUpdate']);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -100,13 +106,38 @@ class Goods extends \yii\db\ActiveRecord
     public function getCurrentCategories()
     {
         $categories = static::hasMany(Categories::class, ['id' => 'id_cat'])->viaTable('{{categories_relation}}', ['id_good' => 'id'])->asArray()->all();
-        return ArrayHelper::map($categories,'id','name');
+        return ArrayHelper::map($categories, 'id', 'name');
+    }
+
+    public function getSubscriptionRelation()
+    {
+        return static::hasMany(Subscription::class, ['id_good' => 'id'])->select(['id', 'email', 'id_good'])->all();
     }
 
     public function afterFind()
     {
         $categories = CategoriesRelation::find()->where(['id_good' => $this->getId()])->all();
         $this->categories = ArrayHelper::getColumn($categories, 'id_cat');
+    }
+
+    public function afterUpdate()
+    {
+        $users = $this->getSubscriptionRelation();
+        $ids = ArrayHelper::getColumn($users, 'id_good');
+        $good = static::find()->where(['id' => $ids])->select(['id', 'name'])->one();
+        if ($users && $this->amount > 0) {
+            /**
+             * @var $user User
+             */
+            foreach ($users as $user) {
+                Yii::$app->mailer->compose(['html' => 'subscriptions'], ['good' => $good, 'user' => $user])
+                    ->setFrom(Yii::$app->params['adminEmail'])
+                    ->setTo($user->email)
+                    ->setSubject('Новая партия Ваших любимых игр!')
+                    ->send();
+            }
+            Subscription::deleteAll(['id' => ArrayHelper::getColumn($users,'id')]);
+        }
     }
 
     public function saveCategories()
@@ -129,8 +160,9 @@ class Goods extends \yii\db\ActiveRecord
         return true;
     }
 
-    public static function getGoodsList(){
+    public static function getGoodsList()
+    {
         $goods = static::find()->all();
-        return ArrayHelper::map($goods,'id','name');
+        return ArrayHelper::map($goods, 'id', 'name');
     }
 }

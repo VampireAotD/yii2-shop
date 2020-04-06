@@ -113,7 +113,9 @@ class Goods extends \yii\db\ActiveRecord
     public function getRecommendationsList($criteria)
     {
         return
-            static::find()->select(['id', 'name', 'image', 'price', 'date', 'views'])
+            static::find()
+                ->select(['id', 'name', 'image', 'price', 'date', 'views'])
+                ->where('goods.amount > 0')
                 ->orderBy($criteria)
                 ->all();
     }
@@ -129,7 +131,8 @@ class Goods extends \yii\db\ActiveRecord
 
         $cats = implode(',', $categories);
 
-        return static::find()->select(['goods.id', 'name', 'image', 'price'])
+        return static::find()
+            ->select(['goods.id', 'name', 'image', 'price'])
             ->innerJoin('categories_relation', 'categories_relation.id_good = goods.id')
             ->where(['!=', 'goods.id', $this->id])
             ->andWhere("id_cat IN ($cats)")

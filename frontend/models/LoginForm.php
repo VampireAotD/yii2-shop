@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\models;
 
 use Yii;
@@ -29,8 +30,8 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
-             [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator2::className(),
-                'secret' => '6LesYOMUAAAAAH74cAQ2uqwq8zMEUEcSe877M-qm', // unnecessary if reСaptcha is already configured
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator2::className(),
+                'secret' => '6LesYOMUAAAAAH74cAQ2uqwq8zMEUEcSe877M-qm',
                 'uncheckedMessage' => 'Please confirm that you are not a bot.'],
         ];
     }
@@ -38,9 +39,9 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-          'username' => Yii::t('forms','Username'),
-          'password' => Yii::t('forms','Password'),
-          'rememberMe' => Yii::t('forms','Remember Me'),
+            'username' => Yii::t('forms', 'Username'),
+            'password' => Yii::t('forms', 'Password'),
+            'rememberMe' => Yii::t('forms', 'Remember Me'),
         ];
     }
 
@@ -71,7 +72,7 @@ class LoginForm extends Model
         if ($this->validate()) {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
-        
+
         return false;
     }
 

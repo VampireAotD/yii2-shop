@@ -3,6 +3,8 @@
 namespace frontend\modules\good\controllers;
 
 use frontend\models\Goods;
+use frontend\models\Subscription;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -21,10 +23,24 @@ class DefaultController extends Controller
     public function actionIndex($id)
     {
         $good = $this->findGood($id);
+        $subscribeModel = new Subscription();
         $good->updateViews();
         $good->viewedBy();
 
-        return $this->render('index',compact('good'));
+        return $this->render('index',compact('good', 'subscribeModel'));
+    }
+
+    public function actionSubscribe(){
+        if(Yii::$app->request->isPost){
+            $model = new Subscription();
+
+            if($model->load(Yii::$app->request->post()) && $model->subscribe()){
+                Yii::$app->session->setFlash('success','Success');
+                return $this->refresh();
+            }
+        }
+
+        return $this->goBack();
     }
 
     protected function findGood($id){

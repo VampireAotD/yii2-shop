@@ -2,10 +2,12 @@
 /**
  * @var $this \yii\web\View
  * @var $good \frontend\models\Goods
+ * @var $subscribeModel \frontend\models\Subscription
  */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 $this->title = $good->name;
 $this->params['breadcrumbs'][] = $this->title;
@@ -35,6 +37,25 @@ $this->registerMetaTag([
                         <div class="col-sm-7">
                             <div class="product-information"><!--/product-information-->
                                 <h2><?= $good->name ?></h2>
+                                <p><b><?= Yii::t('good', 'Availability') ?>:</b>
+                                    <?php
+                                    if ($good->amount > 0) {
+                                        echo Yii::t('good', 'In stock');
+                                    } else {
+                                        echo Yii::t('good', 'Not in stock');
+                                    }
+                                    ?>
+                                </p>
+                                <p><b><?= Yii::t('good', 'Description') ?>:</b> <?= $good->getDescription() ?></p>
+                                <p><b><?= Yii::t('good', 'Date') ?>
+                                        :</b> <?= Yii::$app->formatter->asDate($good->date) ?></p>
+                                <p><b><?= Yii::t('index', 'Categories') ?>:</b>
+                                    <?php
+                                    foreach ($good->getCategories() as $id => $name) {
+                                        echo Html::a($name, ['/site/index', 'id_cat' => $id]) . '&nbsp;';
+                                    }
+                                    ?>
+                                </p>
                                 <span>
 									<span><?= Yii::$app->formatter->asCurrency($good->price) ?></span>
                                     <?php if ($good->amount > 0) { ?>
@@ -56,28 +77,14 @@ $this->registerMetaTag([
                                         ?>
                                         <?php
                                     } else {
-                                        echo 'Not in stock!';
+                                        $form = ActiveForm::begin(['method' => 'post', 'action' => Url::to(['subscribe']), 'options' => ['class' => 'subscribe-form']]);
+                                        echo $form->field($subscribeModel, 'email')->label(Yii::t('good', 'Subscribe to mailing'));
+                                        echo $form->field($subscribeModel, 'id_good')->input('hidden', ['value' => $good->id])->label(false)->error(false);
+                                        echo Html::submitButton(Yii::t('good', 'Subscribe'), ['class' => 'btn btn-default']);
+                                        ActiveForm::end();
                                     }
                                     ?>
 								</span>
-                                <p><b><?=Yii::t('good','Availability')?>:</b>
-                                    <?php
-                                    if ($good->amount > 0) {
-                                        echo Yii::t('good', 'In stock');
-                                    } else {
-                                        echo Yii::t('good', 'Not in stock');
-                                    }
-                                    ?>
-                                </p>
-                                <p><b><?=Yii::t('good','Description')?>:</b> <?= $good->getDescription() ?></p>
-                                <p><b><?=Yii::t('good','Date')?>:</b> <?= Yii::$app->formatter->asDate($good->date) ?></p>
-                                <p><b><?=Yii::t('index','Categories')?>:</b>
-                                    <?php
-                                    foreach ($good->getCategories() as $id => $name) {
-                                        echo Html::a($name, ['/site/index', 'id_cat' => $id]) . '&nbsp;';
-                                    }
-                                    ?>
-                                </p>
                             </div><!--/product-information-->
                         </div>
                     </div><!--/product-details-->
@@ -85,7 +92,8 @@ $this->registerMetaTag([
                     <div class="category-tab shop-details-tab"><!--category-tab-->
                         <div class="col-sm-12">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a href="#comments" data-toggle="tab"><?=Yii::t('good','Comments')?></a></li>
+                                <li class="active"><a href="#comments"
+                                                      data-toggle="tab"><?= Yii::t('good', 'Comments') ?></a></li>
                             </ul>
                         </div>
                         <div class="tab-content">
@@ -110,7 +118,7 @@ $this->registerMetaTag([
                     </div><!--/category-tab-->
 
                     <div class="recommended_items"><!--recommended_items-->
-                        <h2 class="title text-center"><?=Yii::t('good','Similar')?></h2>
+                        <h2 class="title text-center"><?= Yii::t('good', 'Similar') ?></h2>
 
                         <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
                             <div class="swiper-container">
@@ -125,7 +133,7 @@ $this->registerMetaTag([
                                                              alt=""/>
                                                         <h2><?= Yii::$app->formatter->asCurrency($similarGood['price']) ?></h2>
                                                         <p><?= $similarGood['name'] ?></p>
-                                                        <?= Html::a('<i class="fa fa-shopping-cart"></i>'.Yii::t('index', 'Details').'', ['/good/default/index', 'id' => $similarGood['id']], ['class' => 'btn btn-default']) ?>
+                                                        <?= Html::a('<i class="fa fa-shopping-cart"></i>' . Yii::t('index', 'Details') . '', ['/good/default/index', 'id' => $similarGood['id']], ['class' => 'btn btn-default']) ?>
                                                     </div>
                                                 </div>
                                             </div>

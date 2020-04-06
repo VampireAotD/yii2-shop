@@ -12,7 +12,7 @@ foreach ($goods as $recommended) : ?>
                 <div class="productinfo text-center">
                     <img src="<?= $recommended->getImage() ?>" alt=""/>
                     <h2><?= Yii::$app->formatter->asCurrency($recommended->price) ?></h2>
-                    <p><?= $recommended->name ?></p>
+                    <p><a href="<?=\yii\helpers\Url::to(['good/default/index', 'id' => $recommended->id])?>"><?= $recommended->name ?></a></p>
                     <?= ButtonsWidget::widget(['id' => $recommended->id]) ?>
                 </div>
             </div>
