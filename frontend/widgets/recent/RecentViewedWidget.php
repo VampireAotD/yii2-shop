@@ -14,8 +14,8 @@ class RecentViewedWidget extends Widget
         $init = RecentViews::find()
             ->where(['user_ip' => Yii::$app->request->userIP])
             ->innerJoinWith('good')
-            ->limit(6)
             ->orderBy('expire DESC')
+            ->limit(6)
             ->all();
         $goods = ArrayHelper::getColumn($init,'good');
         return $this->render('block', compact('goods'));

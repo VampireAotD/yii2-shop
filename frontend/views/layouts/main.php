@@ -150,12 +150,9 @@ AppAsset::register($this);
                     <div class="col-sm-6">
                         <div class="search_box pull-right">
                             <?php
-                            ActiveForm::begin([
-                                'action' => '/site/index',
-                                'method' => 'GET'
-                            ]);
-                            echo SearchWidget::widget();
-                            ActiveForm::end();
+                                echo Html::beginForm(['action' => 'site/search', 'method' => 'GET']);
+                                echo SearchWidget::widget();
+                                echo Html::endForm();
                             ?>
                         </div>
                     </div>

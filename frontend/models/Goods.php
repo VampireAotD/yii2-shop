@@ -86,7 +86,17 @@ class Goods extends \yii\db\ActiveRecord
         return ArrayHelper::map($categories, 'id', 'name');
     }
 
-    public function getGoodsList($params)
+    public function getGoodsList()
+    {
+        $query = static::find()
+            ->select(['goods.id', 'name', 'price', 'image', 'date'])
+            ->where('goods.amount > 0')
+            ->distinct();
+
+        return $query->orderBy('date DESC');
+    }
+
+    public function search($params)
     {
         $query = static::find()
             ->select(['goods.id', 'name', 'price', 'image', 'date'])
@@ -117,6 +127,7 @@ class Goods extends \yii\db\ActiveRecord
                 ->select(['id', 'name', 'image', 'price', 'date', 'views'])
                 ->where('goods.amount > 0')
                 ->orderBy($criteria)
+                ->limit(4)
                 ->all();
     }
 
@@ -126,18 +137,21 @@ class Goods extends \yii\db\ActiveRecord
 
         foreach ($this->getCategories() as $key => $value) {
             array_push($categories, $key);
-
         }
 
         $cats = implode(',', $categories);
 
-        return static::find()
+        $query = static::find()
             ->select(['goods.id', 'name', 'image', 'price'])
-            ->innerJoin('categories_relation', 'categories_relation.id_good = goods.id')
-            ->where(['!=', 'goods.id', $this->id])
-            ->andWhere("id_cat IN ($cats)")
-            ->asArray()
-            ->all();
+            ->where(['!=', 'goods.id', $this->id]);
+
+        if ($categories) {
+            return $query
+                ->innerJoin('categories_relation', 'categories_relation.id_good = goods.id')
+                ->andWhere("id_cat IN ($cats)")
+                ->asArray()
+                ->all();
+        }
     }
 
     public function getImage()
@@ -165,7 +179,7 @@ class Goods extends \yii\db\ActiveRecord
     public function updateViews()
     {
         $this->views++;
-        return $this->save(false,['views']);
+        return $this->save(false, ['views']);
     }
 
     public function viewedBy()

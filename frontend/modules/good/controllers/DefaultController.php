@@ -26,16 +26,18 @@ class DefaultController extends Controller
         $subscribeModel = new Subscription();
         $good->updateViews();
         $good->viewedBy();
+        $similarGoods = $good->getSimilarGoods();
 
-        return $this->render('index',compact('good', 'subscribeModel'));
+        return $this->render('index', compact('good', 'subscribeModel', 'similarGoods'));
     }
 
-    public function actionSubscribe(){
-        if(Yii::$app->request->isPost){
+    public function actionSubscribe()
+    {
+        if (Yii::$app->request->isPost) {
             $model = new Subscription();
 
-            if($model->load(Yii::$app->request->post()) && $model->subscribe()){
-                Yii::$app->session->setFlash('success','Success');
+            if ($model->load(Yii::$app->request->post()) && $model->subscribe()) {
+                Yii::$app->session->setFlash('success', 'Success');
                 return $this->refresh();
             }
         }
@@ -43,9 +45,10 @@ class DefaultController extends Controller
         return $this->goBack();
     }
 
-    protected function findGood($id){
+    protected function findGood($id)
+    {
         $good = Goods::findOne($id);
-        if($good){
+        if ($good) {
             return $good;
         }
         throw new NotFoundHttpException();

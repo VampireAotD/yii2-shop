@@ -117,34 +117,36 @@ $this->registerMetaTag([
                         </div>
                     </div><!--/category-tab-->
 
-                    <div class="recommended_items"><!--recommended_items-->
-                        <h2 class="title text-center"><?= Yii::t('good', 'Similar') ?></h2>
+                    <?php if ($similarGoods) : ?>
+                        <div class="recommended_items"><!--recommended_items-->
+                            <h2 class="title text-center"><?= Yii::t('good', 'Similar') ?></h2>
 
-                        <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
-                            <div class="swiper-container">
-                                <div class="swiper-wrapper">
-                                    <!-- Slides -->
-                                    <?php foreach ($good->getSimilarGoods() as $similarGood) : ?>
-                                        <div class="col-sm-4">
-                                            <div class="product-image-wrapper">
-                                                <div class="single-products">
-                                                    <div class="productinfo text-center">
-                                                        <img src="<?= Yii::$app->storage->getFile($similarGood['image']) ?>"
-                                                             alt=""/>
-                                                        <h2><?= Yii::$app->formatter->asCurrency($similarGood['price']) ?></h2>
-                                                        <p><?= $similarGood['name'] ?></p>
-                                                        <?= Html::a('<i class="fa fa-shopping-cart"></i>' . Yii::t('index', 'Details') . '', ['/good/default/index', 'id' => $similarGood['id']], ['class' => 'btn btn-default']) ?>
+                            <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+                                <div class="swiper-container">
+                                    <div class="swiper-wrapper">
+                                        <!-- Slides -->
+                                        <?php foreach ($similarGoods as $similarGood) : ?>
+                                            <div class="col-sm-4">
+                                                <div class="product-image-wrapper">
+                                                    <div class="single-products">
+                                                        <div class="productinfo text-center">
+                                                            <img src="<?= Yii::$app->storage->getFile($similarGood['image']) ?>"
+                                                                 alt=""/>
+                                                            <h2><?= Yii::$app->formatter->asCurrency($similarGood['price']) ?></h2>
+                                                            <p><?= $similarGood['name'] ?></p>
+                                                            <?= Html::a('<i class="fa fa-shopping-cart"></i>' . Yii::t('index', 'Details') . '', ['/good/default/index', 'id' => $similarGood['id']], ['class' => 'btn btn-default']) ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    <?php endforeach; ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
                                 </div>
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
                             </div>
-                        </div>
-                    </div><!--/recommended_items-->
+                        </div><!--/recommended_items-->
+                    <?php endif; ?>
 
                 </div>
             </div>

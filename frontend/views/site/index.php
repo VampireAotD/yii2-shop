@@ -2,9 +2,9 @@
 
 /**
  * @var $this yii\web\View
- * @var $model \frontend\models\Categories
+ * @var $categories \frontend\models\Categories
  * @var $goods \frontend\models\Goods
- * @var $slider \frontend\models\Slide
+ * @var $slides \frontend\models\Slide
  */
 
 use frontend\widgets\buttons\ButtonsWidget;
@@ -82,7 +82,7 @@ $this->registerMetaTag([
                             <div class="well text-center">
                                 <?php
                                 ActiveForm::begin([
-                                    'action' => '/site/index',
+                                    'action' => '/site/search',
                                     'method' => 'GET',
                                 ]);
                                 echo PriceRangeWidget::widget();
@@ -162,12 +162,13 @@ $this->registerMetaTag([
                         ?>
                     </div><!--features_items-->
 
-                    <div class="pagination">
-                        <?= LinkPager::widget(['pagination' => $pagination]) ?>
-                    </div>
                     <?php
                     Pjax::end();
                     ?>
+
+                    <div style="height: 50px">
+                        <?= LinkPager::widget(['pagination' => $pagination]) ?>
+                    </div>
 
                     <div class="category-tab"><!--category-tab-->
                         <div class="col-sm-12">

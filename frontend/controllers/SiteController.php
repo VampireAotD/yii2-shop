@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\controllers;
 
 use frontend\components\AuthHandler;
@@ -7,7 +8,6 @@ use frontend\models\Categories;
 use frontend\models\Goods;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
-use frontend\widgets\goodslist\GoodsListWidget;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\data\Pagination;
@@ -92,15 +92,11 @@ class SiteController extends Controller
         $goods_model = new Goods;
         $slider_model = new Slide;
 
-        $params = [];
-        if(Yii::$app->request->get()){
-            $params = Yii::$app->request->get();
-        }
+        $goods = $goods_model->getGoodsList();
 
-        $goods = $goods_model->getGoodsList($params);
         $pagination = new Pagination([
-           'defaultPageSize' => 50,
-           'totalCount' => $goods->count()
+            'pageSize' => 20,
+            'totalCount' => $goods->count()
         ]);
 
         $categories = $categories_model->getCategoriesList();
@@ -108,7 +104,32 @@ class SiteController extends Controller
         $slides = $slider_model->getSlideList();
         $max_price = Goods::getMaxPrice();
 
-        return $this->render('index',compact('categories','goods', 'pagination', 'slides', 'max_price'));
+        return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price'));
+    }
+
+    public function actionSearch(){
+        $categories_model = new Categories;
+        $goods_model = new Goods;
+        $slider_model = new Slide;
+
+        $params = [];
+        if (Yii::$app->request->get()) {
+            $params = Yii::$app->request->get();
+        }
+
+        $goods = $goods_model->search($params);
+
+        $pagination = new Pagination([
+            'pageSize' => 20,
+            'totalCount' => $goods->count()
+        ]);
+
+        $categories = $categories_model->getCategoriesList();
+        $goods = $goods->offset($pagination->offset)->limit($pagination->limit)->all();
+        $slides = $slider_model->getSlideList();
+        $max_price = Goods::getMaxPrice();
+
+        return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price'));
     }
 
     /**
@@ -146,10 +167,11 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function actionLanguage(){
-        if(Yii::$app->request->post('language')){
+    public function actionLanguage()
+    {
+        if (Yii::$app->request->post('language')) {
             Yii::$app->language = Yii::$app->request->post('language');
-            Yii::$app->cookiesAndSession->createNewCookie('language',Yii::$app->request->post('language'));
+            Yii::$app->cookiesAndSession->createNewCookie('language', Yii::$app->request->post('language'));
             return $this->redirect(Yii::$app->request->referrer);
         }
         return $this->goHome();
@@ -165,9 +187,9 @@ class SiteController extends Controller
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-                Yii::$app->session->setFlash('success', Yii::t('mail','Thank you for contacting us. We will respond to you as soon as possible.'));
+                Yii::$app->session->setFlash('success', Yii::t('mail', 'Thank you for contacting us. We will respond to you as soon as possible.'));
             } else {
-                Yii::$app->session->setFlash('error', Yii::t('mail','There was an error sending your message.'));
+                Yii::$app->session->setFlash('error', Yii::t('mail', 'There was an error sending your message.'));
             }
 
             return $this->refresh();
@@ -183,7 +205,7 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', Yii::t('mail','Thank you for registration. Please check your inbox for verification email.'));
+            Yii::$app->session->setFlash('success', Yii::t('mail', 'Thank you for registration. Please check your inbox for verification email.'));
             return $this->goHome();
         }
 
@@ -202,11 +224,11 @@ class SiteController extends Controller
         $model = new PasswordResetRequestForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', Yii::t('mail','Check your email for further instructions.'));
+                Yii::$app->session->setFlash('success', Yii::t('mail', 'Check your email for further instructions.'));
 
                 return $this->goHome();
             } else {
-                Yii::$app->session->setFlash('error', Yii::t('mail','Sorry, we are unable to reset password for the provided email address.'));
+                Yii::$app->session->setFlash('error', Yii::t('mail', 'Sorry, we are unable to reset password for the provided email address.'));
             }
         }
 
@@ -231,7 +253,7 @@ class SiteController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
-            Yii::$app->session->setFlash('success', Yii::t('mail','New password saved.'));
+            Yii::$app->session->setFlash('success', Yii::t('mail', 'New password saved.'));
 
             return $this->goHome();
         }
@@ -257,12 +279,12 @@ class SiteController extends Controller
         }
         if ($user = $model->verifyEmail()) {
             if (Yii::$app->user->login($user)) {
-                Yii::$app->session->setFlash('success', Yii::t('mail','Your email has been confirmed!'));
+                Yii::$app->session->setFlash('success', Yii::t('mail', 'Your email has been confirmed!'));
                 return $this->goHome();
             }
         }
 
-        Yii::$app->session->setFlash('error', Yii::t('mail','Sorry, we are unable to verify your account with provided token.'));
+        Yii::$app->session->setFlash('error', Yii::t('mail', 'Sorry, we are unable to verify your account with provided token.'));
         return $this->goHome();
     }
 
@@ -276,10 +298,10 @@ class SiteController extends Controller
         $model = new ResendVerificationEmailForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendEmail()) {
-                Yii::$app->session->setFlash('success', Yii::t('mail','Check your email for further instructions.'));
+                Yii::$app->session->setFlash('success', Yii::t('mail', 'Check your email for further instructions.'));
                 return $this->goHome();
             }
-            Yii::$app->session->setFlash('error', Yii::t('mail','Sorry, we are unable to resend verification email for the provided email address.'));
+            Yii::$app->session->setFlash('error', Yii::t('mail', 'Sorry, we are unable to resend verification email for the provided email address.'));
         }
 
         return $this->render('resendVerificationEmail', [

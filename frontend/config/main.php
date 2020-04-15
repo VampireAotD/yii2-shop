@@ -55,7 +55,7 @@ return [
                 'cart/remove/<id:\d+>' => 'cart/default/delete',
                 'cart/clear' => 'cart/default/clear',
                 'cart/checkout-confirm' => 'cart/default/checkout-confirm',
-                'category/<id_cat:\d+>' => 'site/index',
+                'category/<id_cat:\d+>' => 'site/search',
                 'index/page/<page:\d+>' => 'site/index',
                 'index' => 'site/index',
             ],
