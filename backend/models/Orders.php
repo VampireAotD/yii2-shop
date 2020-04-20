@@ -93,7 +93,7 @@ class Orders extends ActiveRecord
 
     public function approve(){
         $transaction = static::getDb()->beginTransaction();
-        $this->status = 1;
+        $this->status = self::STATUS_ARRANGED;
 
         if($this->save(false,['status'])){
             $good = Goods::findOne(['id' => $this->id_good]);
@@ -109,7 +109,7 @@ class Orders extends ActiveRecord
 
     public function dismiss(){
         $transaction = static::getDb()->beginTransaction();
-        $this->status = 2;
+        $this->status = self::STATUS_CANCELLED;
 
         if($this->save(false,['status'])){
             $good = Goods::findOne(['id' => $this->id_good]);

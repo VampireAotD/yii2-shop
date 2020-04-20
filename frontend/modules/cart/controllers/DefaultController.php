@@ -2,11 +2,9 @@
 
 namespace frontend\modules\cart\controllers;
 
-use frontend\models\Goods;
 use frontend\modules\cart\models\CartHandler;
 use frontend\modules\cart\models\forms\Checkout;
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -15,14 +13,24 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    private $handler;
+    private $helper;
+
+    public function init()
+    {
+        parent::init();
+        $this->handler = new CartHandler;
+        $this->helper = Yii::$app->cookiesAndSession;
+    }
+
     /**
      * Renders the index view for the module
      * @return string
      */
     public function actionIndex()
     {
-        $items = Yii::$app->cookiesAndSession->getSession('basket');
-        $model = new CartHandler;
+        $items = $this->helper->getSession('basket');
+        $model = $this->handler;
         $total = $model->getTotal();
         return $this->render('index', compact('items', 'model', 'total'));
     }
@@ -33,11 +41,11 @@ class DefaultController extends Controller
      */
     public function actionAdd($id)
     {
-        if(Yii::$app->request->isAjax){
-            $handler = new CartHandler;
+        if (Yii::$app->request->isAjax) {
+
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
-                'counter' => $handler->addToCart($id),
+                'counter' => $this->handler->addToCart($id),
             ];
         }
         return $this->goHome();
@@ -49,8 +57,10 @@ class DefaultController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = new CartHandler;
-        $model->deleteItem($id);
+        if (!$this->handler->deleteItem($id)) {
+            Yii::$app->session->setFlash('danger', Yii::t('forms','Error while deleting item'));
+            return $this->redirect(['/cart/default/index']);
+        }
         return $this->redirect(['/cart/default/index']);
     }
 
@@ -62,9 +72,8 @@ class DefaultController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         if (Yii::$app->request->isPost) {
-            $handler = new CartHandler;
             $data = Yii::$app->request->post();
-            return ['total' => $handler->changeAmount($data)];
+            return ['total' => $this->handler->changeAmount($data)];
         }
         return $this->redirect(['/cart/default/index']);
     }
@@ -78,9 +87,8 @@ class DefaultController extends Controller
             return $this->redirect(['/site/signup']);
         }
 
-        $model = new CartHandler;
-        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
+        if (Yii::$app->request->isPost && $this->handler->load(Yii::$app->request->post())) {
+            if ($this->handler->validate()) {
                 return $this->redirect(['/cart/default/checkout-confirm']);
             }
         }
@@ -98,15 +106,14 @@ class DefaultController extends Controller
         }
 
         $user = Yii::$app->user->identity;
-        $items = Yii::$app->cookiesAndSession->getSession('basket');
+        $items = $this->helper->getSession('basket');
 
         $model = new Checkout($user, $items);
-        $handler = new CartHandler;
-
-        $total = $handler->getTotal();
+        $total = $this->handler->getTotal();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->cookiesAndSession->removeSession('basket');
+            $this->helper->removeSession('basket');
+
             Yii::$app->session->setFlash('success', 'Ваш заказ был успешно оформлен!');
             return $this->redirect(['/site/index']);
         }
@@ -119,7 +126,7 @@ class DefaultController extends Controller
      */
     public function actionClear()
     {
-        Yii::$app->cookiesAndSession->removeSession('basket');
+        $this->helper->removeSession('basket');
         return $this->redirect(['/cart/default/index']);
     }
 }

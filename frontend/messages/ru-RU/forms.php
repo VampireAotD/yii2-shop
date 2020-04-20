@@ -15,6 +15,7 @@ return [
     'If you have business inquiries or other questions, please fill out the following form to contact us. Thank you.' => 'Если у вас есть бизнес предложение или другие вопросы, пожалуйста свяжитесь с нами.',
     'Or login via Facebook' => 'Войти при помощи Facebook',
     'If you forgot your password you can' => 'Если вы забыли Ваш пароль вы можете ',
+    'Error while deleting item' => 'Произошла ошибка при удалении из корзины',
     'reset it' => 'восстановить его',
     'Description' => 'Описание к заказу',
     'Remember Me' => 'Запомнить меня',
