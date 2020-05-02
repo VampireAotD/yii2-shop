@@ -16,8 +16,11 @@ class RecentViewedWidget extends Widget
             ->innerJoinWith('good')
             ->orderBy('expire DESC')
             ->limit(6)
+            ->cache(60)
             ->all();
-        $goods = ArrayHelper::getColumn($init,'good');
-        return $this->render('block', compact('goods'));
+        $goods = ArrayHelper::getColumn($init, 'good');
+        $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
+
+        return $this->render('block', compact('goods', 'currency'));
     }
 }

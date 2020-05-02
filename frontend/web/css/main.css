@@ -1467,6 +1467,14 @@ h2.title {
     width: 80% !important;
 }
 
+.prices > div{
+    display: none;
+}
+
+.prices .active{
+    display: block;
+}
+
 /*************************
 *******404 CSS******
 **************************/

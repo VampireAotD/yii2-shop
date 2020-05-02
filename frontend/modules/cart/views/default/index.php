@@ -46,8 +46,10 @@ $this->registerMetaTag([
                         <?php foreach ($items as $item) : ?>
                             <tr>
                                 <td class="cart_product">
-                                    <a href="<?= Url::to(['/good/default/index', 'id' => $item['id']]) ?>"><img src="<?= Yii::$app->storage->getFile($item['image']) ?>" alt="<?= $item['name'] ?>"
-                                                    width="120px"></a>
+                                    <a href="<?= Url::to(['/good/default/index', 'id' => $item['id']]) ?>"><img
+                                                src="<?= Yii::$app->storage->getFile($item['image']) ?>"
+                                                alt="<?= $item['name'] ?>"
+                                                width="120px"></a>
                                 </td>
                                 <td class="cart_description">
                                     <h4>
@@ -55,7 +57,13 @@ $this->registerMetaTag([
                                     </h4>
                                 </td>
                                 <td class="cart_price">
-                                    <p><?= Yii::$app->formatter->asCurrency($item['price']) ?></p>
+                                    <p>
+                                        <?php if ($currency) : ?>
+                                            <?= $currency . ' ' . Yii::$app->currencyHelper->getPrice($currency, $item['price']) ?>
+                                        <?php else: ?>
+                                            <?= Yii::$app->formatter->asCurrency($item['price']) ?>
+                                        <?php endif; ?>
+                                    </p>
                                 </td>
                                 <td class="cart_quantity">
                                     <div class="cart_quantity_button">
@@ -82,7 +90,7 @@ $this->registerMetaTag([
                         <?php endforeach; ?>
                         <tr>
                             <td colspan="12" class="cart_total_price"><?= Yii::t('table', 'Total price') ?>
-                                : <?= Html::tag('span', Yii::$app->formatter->asCurrency($total), ['class' => 'total']) ?></td>
+                                : <?= Html::tag('span', Yii::$app->currencyHelper->getPrice($currency, $total), ['class' => 'total']) ?></td>
                         </tr>
                         <tr class="controls">
                             <td><a

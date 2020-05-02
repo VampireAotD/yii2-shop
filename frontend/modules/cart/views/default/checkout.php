@@ -10,7 +10,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
-$this->title = Yii::t('forms','Checkout');
+$this->title = Yii::t('forms', 'Checkout');
 $this->params['breadcrumbs'][] = $this->title;
 $this->registerMetaTag([
     'name' => 'keywords',
@@ -32,9 +32,9 @@ $this->registerMetaTag([
             $form = ActiveForm::begin(['action' => '/cart/default/checkout-confirm', 'method' => 'POST']);
             ?>
             <?php
-            echo $form->field($model,'username')->input('text',['value' => $model->getUser()->username]);
-            echo $form->field($model,'email')->input('text',['value' => $model->getUser()->email]);
-            echo $form->field($model,'description')->textarea(['placeholder' => Yii::t('forms','Description')]);
+            echo $form->field($model, 'username')->input('text', ['value' => $model->getUser()->username]);
+            echo $form->field($model, 'email')->input('text', ['value' => $model->getUser()->email]);
+            echo $form->field($model, 'description')->textarea(['placeholder' => Yii::t('forms', 'Description')]);
             ?>
             <div class="table-responsive cart_info">
                 <table class="table table-condensed">
@@ -53,8 +53,10 @@ $this->registerMetaTag([
                         <?php foreach ($model->getSession() as $item) : ?>
                             <tr>
                                 <td class="cart_product">
-                                    <a href="<?= Url::to(['/good/default/index', 'id' => $item['id']]) ?>"><img src="<?= Yii::$app->storage->getFile($item['image']) ?>" alt="<?= $item['name'] ?>"
-                                                                                                                width="120px"></a>
+                                    <a href="<?= Url::to(['/good/default/index', 'id' => $item['id']]) ?>"><img
+                                                src="<?= Yii::$app->storage->getFile($item['image']) ?>"
+                                                alt="<?= $item['name'] ?>"
+                                                width="120px"></a>
                                 </td>
                                 <td class="cart_description">
                                     <h4>

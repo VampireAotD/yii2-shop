@@ -100,14 +100,16 @@ class SiteController extends Controller
         ]);
 
         $categories = $categories_model->getCategoriesList();
-        $goods = $goods->offset($pagination->offset)->limit($pagination->limit)->all();
+        $goods = $goods->offset($pagination->offset)->limit($pagination->limit)->cache(Yii::$app->params['defaultCookieTime'])->all();
         $slides = $slider_model->getSlideList();
         $max_price = Goods::getMaxPrice();
+        $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
 
-        return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price'));
+        return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price', 'currency'));
     }
 
-    public function actionSearch(){
+    public function actionSearch()
+    {
         $categories_model = new Categories;
         $goods_model = new Goods;
         $slider_model = new Slide;
@@ -130,6 +132,13 @@ class SiteController extends Controller
         $max_price = Goods::getMaxPrice();
 
         return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price'));
+    }
+
+    public function actionSetCurrency()
+    {
+        $currency = Yii::$app->request->get('currency');
+        Yii::$app->cookiesAndSession->createNewCookie('currency', $currency);
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

@@ -19,8 +19,16 @@ if ($goods) {
                             <div class="single-products">
                                 <div class="productinfo text-center">
                                     <img src="<?= Yii::$app->storage->getFile($good['image']) ?>" alt=""/>
-                                    <h2><?= Yii::$app->formatter->asCurrency($good['price']) ?></h2>
-                                    <p><a href="<?=\yii\helpers\Url::to(['good/default/index', 'id' => $good->id])?>"><?= $good['name'] ?></a></p>
+                                    <h2>
+                                        <?php if ($currency) : ?>
+                                            <?= $currency . ' ' . Yii::$app->currencyHelper->getPrice($currency, $good->price) ?>
+                                        <?php else: ?>
+                                            <?= Yii::$app->formatter->asCurrency($good->price) ?>
+                                        <?php endif; ?>
+                                    </h2>
+                                    <p>
+                                        <a href="<?= \yii\helpers\Url::to(['good/default/index', 'id' => $good->id]) ?>"><?= $good['name'] ?></a>
+                                    </p>
                                     <?php
                                     if ($good['amount'] > 0) {
                                         echo ButtonsWidget::widget(['id' => $good['id']]);

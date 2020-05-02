@@ -32,7 +32,8 @@ class DefaultController extends Controller
         $items = $this->helper->getSession('basket');
         $model = $this->handler;
         $total = $model->getTotal();
-        return $this->render('index', compact('items', 'model', 'total'));
+        $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
+        return $this->render('index', compact('items', 'model', 'total', 'currency'));
     }
 
     /**
@@ -58,7 +59,7 @@ class DefaultController extends Controller
     public function actionDelete($id)
     {
         if (!$this->handler->deleteItem($id)) {
-            Yii::$app->session->setFlash('danger', Yii::t('forms','Error while deleting item'));
+            Yii::$app->session->setFlash('danger', Yii::t('forms', 'Error while deleting item'));
             return $this->redirect(['/cart/default/index']);
         }
         return $this->redirect(['/cart/default/index']);

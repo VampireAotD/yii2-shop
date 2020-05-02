@@ -75,7 +75,26 @@ AppAsset::register($this);
                                     ['en-EN' => 'English', 'ru-RU' => 'Русский'],
                                     ['class' => 'language-selection']
                                 );
-                                Html::endForm();
+                                echo Html::endForm();
+                                ?>
+                            </div>
+                            <div class="btn-group" style="margin-left: 20px">
+                                <?php
+                                echo Html::beginForm('/site/set-currency', 'get', ['class' => 'currency-form']);
+                                echo Html::dropDownList(
+                                    'currency',
+                                    Yii::$app->cookiesAndSession->getCookieValue('currency')
+                                        ? Yii::$app->cookiesAndSession->getCookieValue('currency')
+                                        : Yii::$app->params['defaultCurrency'],
+                                    [
+                                        'UAH' => 'Гривны - ₴',
+                                        'USD' => 'Доллары - $',
+                                        'RUR' => 'Рубли - ₽',
+                                        'EUR' => 'Евро - €'
+                                    ],
+                                    ['class' => 'currency-selection']
+                                );
+                                echo Html::endForm();
                                 ?>
                             </div>
                         </div>
@@ -150,9 +169,9 @@ AppAsset::register($this);
                     <div class="col-sm-6">
                         <div class="search_box pull-right">
                             <?php
-                                echo Html::beginForm(['action' => 'site/search', 'method' => 'GET']);
-                                echo SearchWidget::widget();
-                                echo Html::endForm();
+                            ActiveForm::begin(['action' => 'site/search', 'method' => 'GET']);
+                            echo SearchWidget::widget();
+                            ActiveForm::end();
                             ?>
                         </div>
                     </div>

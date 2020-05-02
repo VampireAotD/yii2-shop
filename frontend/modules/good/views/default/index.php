@@ -57,7 +57,14 @@ $this->registerMetaTag([
                                     ?>
                                 </p>
                                 <span>
-									<span><?= Yii::$app->formatter->asCurrency($good->price) ?></span>
+									<span>
+                                        <?php if ($currency) : ?>
+                                            <?= $currency . ' ' . Yii::$app->currencyHelper->getPrice($currency, $good->price) ?>
+                                        <?php else: ?>
+                                            <?= Yii::$app->formatter->asCurrency($good->price) ?>
+                                        <?php endif; ?>
+                                    </span>
+
                                     <?php if ($good->amount > 0) { ?>
                                         <?php
                                         if (!Yii::$app->cookiesAndSession->inSession('basket', $good->id)) {
@@ -132,7 +139,13 @@ $this->registerMetaTag([
                                                         <div class="productinfo text-center">
                                                             <img src="<?= Yii::$app->storage->getFile($similarGood['image']) ?>"
                                                                  alt=""/>
-                                                            <h2><?= Yii::$app->formatter->asCurrency($similarGood['price']) ?></h2>
+                                                            <h2>
+                                                                <?php if ($currency) : ?>
+                                                                    <?= $currency . ' ' . Yii::$app->currencyHelper->getPrice($currency, $similarGood['price']) ?>
+                                                                <?php else: ?>
+                                                                    <?= Yii::$app->formatter->asCurrency($similarGood['price']) ?>
+                                                                <?php endif; ?>
+                                                            </h2>
                                                             <p><?= $similarGood['name'] ?></p>
                                                             <?= Html::a('<i class="fa fa-shopping-cart"></i>' . Yii::t('index', 'Details') . '', ['/good/default/index', 'id' => $similarGood['id']], ['class' => 'btn btn-default']) ?>
                                                         </div>

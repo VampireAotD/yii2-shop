@@ -2,6 +2,7 @@
 namespace frontend\widgets\recommentdations;
 
 use frontend\models\Goods;
+use Yii;
 use yii\base\Widget;
 
 class RecommendationsList extends Widget
@@ -17,7 +18,8 @@ class RecommendationsList extends Widget
         }
 
         $goods = $model->getRecommendationsList($this->criteria);
+        $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
 
-        return $this->render('block',compact('goods'));
+        return $this->render('block',compact('goods', 'currency'));
     }
 }

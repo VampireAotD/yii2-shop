@@ -64,7 +64,7 @@ return [
             'dateFormat' => 'dd MMMM yyyy',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
-            'currencyCode' => 'UA',
+            'currencyCode' => 'UA'
         ],
         'cookiesAndSession' => [
             'class' => 'frontend\components\CookiesAndSessionsHelper',
@@ -90,6 +90,9 @@ return [
                     'clientSecret' => 'd776ea98c27351facc5fff2bfc07b882',
                 ],
             ],
+        ],
+        'currencyHelper' => [
+            'class' => 'frontend\components\Currencies',
         ],
     ],
     'modules' => [

@@ -51,7 +51,7 @@ $this->registerMetaTag([
         </div>
     </section><!--/slider-->
 
-    <div style="height: 40px;"></div>
+    <div style="height: 40px;"></div><!--clearfix-->
 
     <section>
         <div class="container">
@@ -59,7 +59,7 @@ $this->registerMetaTag([
                 <div class="col-sm-3">
                     <div class="left-sidebar">
                         <h2><?= Yii::t('index', 'Categories') ?></h2>
-                        <div class="panel-group category-products" id="accordian"><!--category-productsr-->
+                        <div class="panel-group category-products" id="accordian"><!--category-products-->
                             <?php foreach ($categories as $category) : ?>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -102,7 +102,7 @@ $this->registerMetaTag([
 
                 <div class="col-sm-9 padding-right">
                     <?php
-                    Pjax::begin(['timeout' => 5000,])
+                    Pjax::begin(['timeout' => 5000])
                     ?>
                     <div class="features_items"><!--features_items-->
                         <h2 class="title text-center"><?= Yii::t('index', 'Features Items') ?></h2>
@@ -115,7 +115,13 @@ $this->registerMetaTag([
                                         <div class="single-products">
                                             <div class="productinfo text-center">
                                                 <img src="<?= $good->getImage() ?>" alt=""/>
-                                                <h2><?= Yii::$app->formatter->asCurrency($good->price) ?></h2>
+                                                <h2>
+                                                    <?php if ($currency) : ?>
+                                                        <?= $currency . ' ' . Yii::$app->currencyHelper->getPrice($currency, $good->price) ?>
+                                                    <?php else: ?>
+                                                        <?= Yii::$app->formatter->asCurrency($good->price) ?>
+                                                    <?php endif; ?>
+                                                </h2>
                                                 <p><?= $good->name ?></p>
                                             </div>
                                             <div class="product-overlay">

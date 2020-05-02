@@ -27,8 +27,9 @@ class DefaultController extends Controller
         $good->updateViews();
         $good->viewedBy();
         $similarGoods = $good->getSimilarGoods();
+        $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
 
-        return $this->render('index', compact('good', 'subscribeModel', 'similarGoods'));
+        return $this->render('index', compact('good', 'subscribeModel', 'similarGoods', 'currency'));
     }
 
     public function actionSubscribe()
