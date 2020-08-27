@@ -260,6 +260,45 @@ a#scrollUp i {
     background-position: 530px;
 }
 
+.search-items{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #e6e3e3;
+    z-index: 20;
+}
+
+.search-item{
+    display: flex;
+    padding: 0.5em;
+    border-bottom: 1px solid #1f1e1e;
+}
+
+.search-item a{
+    color: #464c50;
+}
+
+.search-item .desc{
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-item .desc .inner{
+    width: 75%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    word-wrap: break-word;
+}
+
+.search-item img{
+    width: 25%;
+    height: 100%;
+}
+
 .ui-menu {
     z-index: 10000 !important;
 }

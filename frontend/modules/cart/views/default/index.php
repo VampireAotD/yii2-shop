@@ -3,6 +3,8 @@
  * @var $this \yii\web\View
  * @var $items \frontend\models\Goods
  * @var $model \frontend\modules\cart\models\CartHandler
+ * @var $currency string
+ * @var $total int
  */
 
 use yii\helpers\Html;

@@ -5,6 +5,8 @@
  * @var $categories \frontend\models\Categories
  * @var $goods \frontend\models\Goods
  * @var $slides \frontend\models\Slide
+ * @var $currency string
+ * @var $max_price double
  */
 
 use frontend\widgets\buttons\ButtonsWidget;
@@ -32,24 +34,26 @@ $this->registerMetaTag([
 ]);
 
 ?>
-    <section id="slider"><!--slider-->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="promo-slider">
-                        <?php foreach ($slides as $slide) : ?>
-                            <a href="<?= Url::to(['/good/default/index', 'id' => $slide->id_good]) ?>">
-                                <div class="slider-image"
-                                     style="background: url('<?= $slide->getImage() ?>') center center; -webkit-background-size: cover; background-size: cover;">
-                                </div>
-                            </a>
-                        <?php endforeach; ?>
+    <?php if (count($slides) > 0) : ?>
+        <section id="slider"><!--slider-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="promo-slider">
+                            <?php foreach ($slides as $slide) : ?>
+                                <a href="<?= Url::to(['/good/default/index', 'id' => $slide->id_good]) ?>">
+                                    <div class="slider-image"
+                                         style="background: url('<?= $slide->getImage() ?>') center center; -webkit-background-size: cover; background-size: cover;">
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    </section><!--/slider-->
+            </div>
+        </section><!--/slider-->
+    <?php endif; ?>
 
     <div style="height: 40px;"></div><!--clearfix-->
 

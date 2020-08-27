@@ -2,8 +2,9 @@
 
 namespace frontend\models;
 
+use common\components\Storage;
 use Yii;
-use yii\db\Expression;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -23,9 +24,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property CategoriesRelation[] $categoriesRelations
  */
-class Goods extends \yii\db\ActiveRecord
+class Goods extends ActiveRecord
 {
-    const DEFAULT_IMAGE = 'no-image.jpg';
+    const TIME = 60 * 60 * 24 * 3;
 
     /**
      * {@inheritdoc}
@@ -88,7 +89,8 @@ class Goods extends \yii\db\ActiveRecord
 
     public function getGoodsList()
     {
-        $query = static::find()
+        $query =
+            static::find()
             ->select(['goods.id', 'name', 'price', 'image', 'date'])
             ->where('goods.amount > 0')
             ->distinct();
@@ -136,22 +138,24 @@ class Goods extends \yii\db\ActiveRecord
         $categories = [];
 
         foreach ($this->getCategories() as $key => $value) {
-            array_push($categories, $key);
+            $categories[] = $key;
         }
 
         $cats = implode(',', $categories);
 
         $query = static::find()
             ->select(['goods.id', 'name', 'image', 'price'])
-            ->where(['!=', 'goods.id', $this->id]);
+            ->where(['<>', 'goods.id', $this->id]);
 
         if ($categories) {
             return $query
                 ->innerJoin('categories_relation', 'categories_relation.id_good = goods.id')
-                ->andWhere("id_cat IN ($cats)")
+                ->andWhere(['in', 'id_cat', $cats])
                 ->asArray()
                 ->all();
         }
+
+        return [];
     }
 
     public function getImage()
@@ -159,7 +163,7 @@ class Goods extends \yii\db\ActiveRecord
         if ($this->image) {
             return Yii::$app->storage->getFile($this->image);
         }
-        return Yii::$app->storage->getFile(self::DEFAULT_IMAGE);
+        return Yii::$app->storage->getFile(Storage::DEFAULT_IMAGE);
     }
 
     public function getDescription()
@@ -186,7 +190,8 @@ class Goods extends \yii\db\ActiveRecord
     {
         $ip = Yii::$app->request->userIP;
         $viewed = time();
-        $expire = $viewed + 60 * 60 * 24 * 3;
+        $expire = $viewed + self::TIME;
+
         if ($model = RecentViews::findOne(['user_ip' => $ip, 'id_good' => $this->id])) {
             $model->viewed = $viewed;
             $model->expire = $expire;
@@ -195,7 +200,7 @@ class Goods extends \yii\db\ActiveRecord
                 'user_ip' => $ip,
                 'id_good' => $this->id,
                 'viewed' => $time = time(),
-                'expire' => $time + 60 * 60 * 24 * 3
+                'expire' => $time + self::TIME
             ]);
         }
         return $model->save();

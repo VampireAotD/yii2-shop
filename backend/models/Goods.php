@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use Elasticsearch\ClientBuilder;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -22,10 +23,6 @@ use yii\helpers\ArrayHelper;
  */
 class Goods extends \yii\db\ActiveRecord
 {
-    public $categories;
-
-    const DEFAULT_IMAGE = 'no-image.jpg';
-
     /**
      * {@inheritdoc}
      */
@@ -34,9 +31,16 @@ class Goods extends \yii\db\ActiveRecord
         return 'goods';
     }
 
+    public $categories;
+
+    const DEFAULT_IMAGE = 'no-image.jpg';
+
+    private $builder;
+
     public function init()
     {
         parent::init();
+        $this->builder = ClientBuilder::create()->setHosts(['localhost:9200'])->build();
         $this->on(self::EVENT_AFTER_UPDATE, [$this, 'afterUpdate']);
     }
 
@@ -125,6 +129,7 @@ class Goods extends \yii\db\ActiveRecord
         $users = $this->getSubscriptionRelation();
         $ids = ArrayHelper::getColumn($users, 'id_good');
         $good = static::find()->where(['id' => $ids])->select(['id', 'name'])->one();
+
         if ($users && $this->amount > 0) {
             /**
              * @var $user User
@@ -136,8 +141,23 @@ class Goods extends \yii\db\ActiveRecord
                     ->setSubject('Новая партия Ваших любимых игр!')
                     ->send();
             }
-            Subscription::deleteAll(['id' => ArrayHelper::getColumn($users,'id')]);
+            Subscription::deleteAll(['id' => ArrayHelper::getColumn($users, 'id')]);
         }
+
+        $this->builder->update([
+            'index' => 'products',
+            'id' => 'product-' . $this->id,
+            'body' => [
+                'doc' => [
+                    'id' => $this->id,
+                    'name' => $this->name,
+                    'description' => $this->description,
+                    'price' => $this->price,
+                    'date' => $this->date,
+                    'image' => $this->image,
+                ]
+            ]
+        ]);
     }
 
     public function saveCategories()

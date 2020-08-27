@@ -168,11 +168,16 @@ AppAsset::register($this);
                     </div>
                     <div class="col-sm-6">
                         <div class="search_box pull-right">
-                            <?php
-                            ActiveForm::begin(['action' => 'site/search', 'method' => 'GET']);
-                            echo SearchWidget::widget();
-                            ActiveForm::end();
-                            ?>
+                            <?= Html::beginForm(['/ajax/search'], 'GET') ?>
+                            <?= Html::textInput('value',null,
+                                [
+                                    'class' => 'search-input',
+                                    'placeholder' => 'Enter what you search',
+                                    'autocomplete' => 'off'
+                                ]
+                            )?>
+                            <div class="search-items"></div>
+                            <?= Html::endForm(); ?>
                         </div>
                     </div>
                 </div>

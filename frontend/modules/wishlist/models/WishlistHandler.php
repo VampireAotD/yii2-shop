@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\modules\wishlist\models;
 
 use frontend\components\CookiesAndSessionsHelper;
@@ -13,36 +14,38 @@ class WishlistHandler
         $this->handler = $handler;
     }
 
-    public function addToWishlist($id){
+    public function addToWishlist($id)
+    {
         $session = $this->handler->getSession('wishlist');
         $exist = false;
         if (!$session) {
             $this->handler->setSession('wishlist');
         }
 
-        if($session){
+        if ($session) {
             foreach ($session as $item) {
-                if($item == $id){
+                if ($item == $id) {
                     $exist = true;
                     break;
                 }
             }
         }
 
-        if(!$exist){
+        if (!$exist) {
             $session[] = $id;
-            $this->handler->setSession('wishlist',$session);
+            $this->handler->setSession('wishlist', $session);
         }
 
-        $this->handler->createNewCookie('wishlist',$session);
+        $this->handler->createNewCookie('wishlist', $session);
 
         return $this->handler->countElementOfCookieValue('wishlist');
     }
 
-    public function deleteFromWishlist($id){
-        $wishlist =$this->handler->getSession('wishlist');
-        for ($i = 0; $i < count($wishlist); $i++){
-            if($wishlist[$i] == $id){
+    public function deleteFromWishlist($id)
+    {
+        $wishlist = $this->handler->getSession('wishlist');
+        for ($i = 0; $i < count($wishlist); $i++) {
+            if ($wishlist[$i] == $id) {
                 unset($wishlist[$i]);
                 break;
             }
@@ -53,13 +56,13 @@ class WishlistHandler
             $clear_list [] = $item;
         }
         $this->handler->removeSession('wishlist');
-        $this->handler->setSession('wishlist',$clear_list);
+        $this->handler->setSession('wishlist', $clear_list);
         unset($clear_list);
 
         $this->handler->removeCookie('wishlist');
-        $this->handler->createNewCookie('wishlist',Yii::$app->cookiesAndSession->getSession('wishlist'));
+        $this->handler->createNewCookie('wishlist', Yii::$app->cookiesAndSession->getSession('wishlist'));
 
-        if(empty($this->handler->getSession('wishlist'))){
+        if (empty($this->handler->getSession('wishlist'))) {
             $this->handler->removeCookie('wishlist');
         }
 

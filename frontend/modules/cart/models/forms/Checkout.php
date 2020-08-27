@@ -35,8 +35,8 @@ class Checkout extends Model
     {
         return [
             'username' => Yii::t('forms', 'Username'),
-            'email' => Yii::t('forms','Email'),
-            'description' => Yii::t('forms','Description'),
+            'email' => Yii::t('forms', 'Email'),
+            'description' => Yii::t('forms', 'Description'),
         ];
     }
 

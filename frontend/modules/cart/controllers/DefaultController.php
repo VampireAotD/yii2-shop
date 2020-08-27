@@ -2,6 +2,7 @@
 
 namespace frontend\modules\cart\controllers;
 
+use frontend\components\CookiesAndSessionsHelper;
 use frontend\modules\cart\models\CartHandler;
 use frontend\modules\cart\models\forms\Checkout;
 use Yii;
@@ -13,7 +14,13 @@ use yii\web\Response;
  */
 class DefaultController extends Controller
 {
+    /**
+     * @var CartHandler
+     */
     private $handler;
+    /**
+     * @var CookiesAndSessionsHelper
+     */
     private $helper;
 
     public function init()

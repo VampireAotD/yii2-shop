@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\components;
 
 use frontend\models\RecentViews;
@@ -12,15 +13,16 @@ class Bootstrap implements BootstrapInterface
     /**
      * Bootstrap method to be called during application bootstrap stage.
      * @param Application $app the application currently running
+     * @return bool
      */
     public function bootstrap($app)
     {
-        if(Yii::$app->request->cookies->get('wishlist')){
-            Yii::$app->cookiesAndSession->setSession('wishlist',Yii::$app->cookiesAndSession->getCookieValue('wishlist'));
+        if (Yii::$app->request->cookies->get('wishlist')) {
+            Yii::$app->cookiesAndSession->setSession('wishlist', Yii::$app->cookiesAndSession->getCookieValue('wishlist'));
         }
 
         $cookie = Yii::$app->cookiesAndSession->getCookieValue('language');
-        if($cookie){
+        if ($cookie) {
             $app->language = $cookie;
         }
 
@@ -29,7 +31,8 @@ class Bootstrap implements BootstrapInterface
         return true;
     }
 
-    private function clearRecent(){
-        return RecentViews::deleteAll(['<=','expire',time()]);
+    private function clearRecent()
+    {
+        return RecentViews::deleteAll(['<=', 'expire', time()]);
     }
 }

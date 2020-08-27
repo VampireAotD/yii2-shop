@@ -10,7 +10,7 @@ class Currencies extends Component
     {
         $getCurrencies = \Yii::$app->cache->getOrSet('getCurrencies', function () {
             return file_get_contents("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11");
-        });
+        },86400);
 
         $currencies = json_decode($getCurrencies, true);
 

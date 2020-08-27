@@ -13,7 +13,6 @@ use yii\web\NotFoundHttpException;
  */
 class DefaultController extends Controller
 {
-
     /**
      * Renders index view
      * @param $id

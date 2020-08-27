@@ -104,7 +104,10 @@ class SiteController extends Controller
         $slides = $slider_model->getSlideList();
         $max_price = Goods::getMaxPrice();
         $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
-
+        Yii::$app->cache->add('someKey', 'some KEY', 60);
+        Yii::$app->cache->getOrSet('some', function () {
+            return 'some cache';
+        }, 3600);
         return $this->render('index', compact('categories', 'goods', 'pagination', 'slides', 'max_price', 'currency'));
     }
 

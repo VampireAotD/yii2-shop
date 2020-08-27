@@ -3,6 +3,8 @@
  * @var $this \yii\web\View
  * @var $good \frontend\models\Goods
  * @var $subscribeModel \frontend\models\Subscription
+ * @var $currency int
+ * @var $similarGoods
  */
 
 use yii\helpers\Html;

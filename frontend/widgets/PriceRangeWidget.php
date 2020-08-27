@@ -12,13 +12,13 @@ class PriceRangeWidget extends Widget
     public function run()
     {
         return Slider::widget([
-           'options' => ['name' => 'price-range',],
-           'clientOptions' => [
-               'min' => 0,
-               'max' => Goods::getMaxPrice(),
-               'range' => true,
-               'value' => [0,Goods::getMaxPrice()],
-           ],
+            'options' => ['name' => 'price-range',],
+            'clientOptions' => [
+                'min' => 0,
+                'max' => Goods::getMaxPrice(),
+                'range' => true,
+                'value' => [0, Goods::getMaxPrice()],
+            ],
             'clientEvents' => [
                 'slide' => new JsExpression('function(event){
                     $(".price-change").val(event.value);

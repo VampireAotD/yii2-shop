@@ -18,6 +18,7 @@ class RecentViewedWidget extends Widget
             ->limit(6)
             ->cache(60)
             ->all();
+
         $goods = ArrayHelper::getColumn($init, 'good');
         $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');
 

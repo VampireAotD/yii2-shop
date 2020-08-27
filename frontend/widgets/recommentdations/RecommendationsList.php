@@ -7,15 +7,11 @@ use yii\base\Widget;
 
 class RecommendationsList extends Widget
 {
-    public $criteria = null;
+    public $criteria = 'date DESC';
 
     public function run()
     {
         $model = new Goods;
-
-        if(!$this->criteria){
-            $this->criteria = 'date DESC';
-        }
 
         $goods = $model->getRecommendationsList($this->criteria);
         $currency = Yii::$app->cookiesAndSession->getCookieValue('currency');

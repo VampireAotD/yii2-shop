@@ -27,6 +27,7 @@ class AppAsset extends AssetBundle
         'js/main.js',
         'js/language-selection.js',
         'js/currency-selection.js',
+        'js/search.js',
         'https://unpkg.com/swiper/js/swiper.min.js',
     ];
     public $depends = [
